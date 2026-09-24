@@ -4,6 +4,12 @@
 :FORWARD DROP [0:0]
 :OUTPUT DROP [0:0]
 -A INPUT -i lo -j ACCEPT
+# 1. Block LLMNR (224.0.0.252:5355)
+-A INPUT -d 224.0.0.252 -p udp --dport 5355 -j DROP
+# 2. Block mDNS (224.0.0.251:5353)
+-A INPUT -d 224.0.0.251 -p udp --dport 5353 -j DROP
+# 3. Block SSDP/UPnP (239.255.255.250:1900)
+-A INPUT -d 239.255.255.250 -p udp --dport 1900 -j DROP
 -t raw -A PREROUTING -p tcp -m u32 --u32 "0>>22&0x3C@12&0xFF=0" -j DROP
 -t raw -A PREROUTING -p tcp -m u32 --u32 "0>>22&0x3C@12&0xFF=0xFF" -j DROP
 -t raw -A PREROUTING -p tcp -m u32 --u32 "0>>22&0x3C@12&0xFF&0x03=0x03" -j DROP
